@@ -1,0 +1,38 @@
+{% extends './basic.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+<br>
+<br>
+<br>
+{% for post in posts %}
+<div class="card">
+
+  <!-- Card image -->
+
+  <!-- Card content -->
+  <div class="card-body">
+
+    <!-- Title -->
+    <h4 class="card-title"><a>{{ post.title }}</a></h4>
+    <h6 class="card-title"><a href={% url 'home-user' post.author %}>{{ post.author }}</a></h6>
+    <!-- Text -->
+    <p class="card-text">{{ post.content }}</p>
+  </div>
+  {% if post.author.id == user.id %}
+  <a type="button" class="btn btn-primary" href={% url 'home-updatepost' post.id%}>Update</a>
+  <a type="button" class="btn btn-danger" href={% url 'home-deletepost' post.id%}>Delete</a>
+  {% endif %}
+</div>
+
+{% endfor %}
+<div id="like-section">
+    {% include 'home/like_section.html' %}
+</div>
+<br>
+<div id="comment-section">
+    {% include 'home/comment_section.html' %}
+</div>
+
+<!-- Card -->
+
+{% endblock main %}

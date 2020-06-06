@@ -1,0 +1,12 @@
+{% extends 'home/basic.html' %} 
+{% load crispy_forms_tags %}
+{% block main %}
+    <br>
+    <br>
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Delete '{{ object.title }}'</h2>
+    <button type="submit" class="btn btn-primary">Delete</button>
+    <a href={% url 'home-detailpost' object.id %} type="cancel" >Cancel</button>
+    </form>
+{% endblock main %}

@@ -1,0 +1,46 @@
+{{ comments.count }}
+{% for comment in comments %}
+<blockquote class="blockquote">
+  <p class="mb-0">By {{ comment.author }} - {{ comment.content }}</p>
+</blockquote>
+{% endfor %}
+<!--   <form action="commentsubmit/" method="Post" id="feedbackform">-->
+                 {% csrf_token %}
+                 <div class="form-group">
+                  <span class="form-label">Comment</span>
+                  <input id="content" class="form-control" type="text" placeholder="" name="content" required>
+                </div>
+     <button type="button"  id="comment"  class="btn btn-primary">Submit</button>
+
+<!--   </form>-->
+<!-- <script type="text/javascript">-->
+<!--          function submit() {-->
+<!--              document.getElementById("feedbackform").submit();-->
+<!--          }-->
+<!--        </script>-->
+  <script>
+  $(document).ready(function() {
+$('#comment').click(function(){
+      var content;
+      content = $("#content").val();
+      $.ajax({
+               type: "POST",
+               url: "commentsubmit/",
+               data: { 'content' : content   ,
+               'csrfmiddlewaretoken': '{{ csrf_token }}'},
+               dataType: "json",
+               success: function(response) {
+               $('#comment-section').html(response['form'])
+<!--                      alert(response.message);-->
+<!--                      alert('Company likes count is now');-->
+                },
+                error: function(rs, e) {
+<!--                       alert(rs.responseText);-->
+                }
+          });
+    });
+    });
+</script>
+
+
+
