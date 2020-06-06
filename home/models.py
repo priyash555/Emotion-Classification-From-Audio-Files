@@ -1,34 +1,27 @@
+"""
+Models.py includes the database structure of the application.
+"""
+
 from django.db import models
-from django.utils import timezone
-from django.contrib.auth.models import User
-from django.urls import reverse
-# Create your models here.
-class Post(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    date_posted = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    likes = models.ManyToManyField(User, related_name='likes',blank=True)
-    images = models.ImageField(upload_to='media', blank=True)
+from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
 
-    def get_absolute_url(self):
-        return reverse('home-detailpost', kwargs={'pk':self.pk})
 
-    def __str__(self):
-        return self.title
+class FileModel(models.Model):
+    file = models.FileField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    path = models.FilePathField(path=settings.MEDIA_ROOT,
+                                default=settings.MEDIA_ROOT)
 
-    def total_likes(self):
-        return self.likes.count()
     class Meta:
-        ordering = ['-date_posted']
+        unique_together = ['file', 'path']
 
-class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    inpost = models.ForeignKey(Post, on_delete=models.CASCADE)
-    content = models.TextField()
 
-    def __str__(self):
-        return self.content
-
-    def get_absolute_url(self):
-        return reverse("Comments_detail", kwargs={"pk": self.pk})
+@receiver(post_delete, sender=FileModel)
+def submission_delete(sender, instance, **kwargs):
+    """
+    This function is used to delete attachments when a file object is deleted.
+    Django does not do this automatically.
+    """
+    instance.file.delete(False)
