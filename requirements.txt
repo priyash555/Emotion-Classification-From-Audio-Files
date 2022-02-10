@@ -49,5 +49,5 @@ numba==0.47.0
 numpy==1.16.0
 pandas==1.0.3
 pytest==5.4.1
-tensorflow==1.15.2
+tensorflow==2.5.3
 djangorestframework==3.11.0
